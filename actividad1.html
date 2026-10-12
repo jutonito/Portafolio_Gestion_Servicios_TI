@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Actividad 1 · Video pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: reproductor grande a la izquierda y capítulos a la derecha; debajo, el guion del capítulo activo */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --sunk:#E6EBEF; --fg:#13212C; --muted:#56656F; --line:#D2DBE1;
+  --accent:#0A6A93; --accent-soft:#D8EBF3; --signal:#C9611A;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif; --body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F171D; --surface:#17222A; --sunk:#1E2B34; --fg:#E4ECF1; --muted:#9AAAB5; --line:#2B3A45; --accent:#4FB3DD; --accent-soft:#163746; --signal:#F0954F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F171D; --surface:#17222A; --sunk:#1E2B34; --fg:#E4ECF1; --muted:#9AAAB5; --line:#2B3A45; --accent:#4FB3DD; --accent-soft:#163746; --signal:#F0954F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.08;text-wrap:balance}
+h1{font-size:clamp(1.9rem,4.6vw,3.2rem);font-weight:800;font-stretch:80%}
+h2{font-size:1.4rem;font-weight:750;font-stretch:88%}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:4px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.lede{font-size:1.1rem;color:var(--muted);max-width:66ch}
+.q{border-left:4px solid var(--signal);padding:4px 0 4px 16px;font-weight:600;font-size:1.1rem;max-width:70ch}
+.player{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+@media (max-width:900px){.player{grid-template-columns:minmax(0,1fr)}}
+.video{background:#000;border-radius:10px;overflow:hidden;aspect-ratio:16/9;max-width:100%}
+.video video{width:100%;height:100%;display:block;background:#000}
+.chapters{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:2px;max-height:min(70vh,560px);overflow:auto}
+.chapters h2{font-size:1rem;padding:8px 10px 6px}
+.ch{border:none;background:transparent;text-align:left;padding:7px 10px;border-radius:6px;display:grid;grid-template-columns:3.4em 1fr;gap:6px;align-items:baseline}
+.ch:hover{background:var(--sunk)}
+.ch .t{font-family:var(--mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.ch .n{font-size:.95rem;font-weight:600}
+.ch[aria-current="true"]{background:var(--accent);color:#fff}
+.ch[aria-current="true"] .t{color:#E3F1F7}
+.script{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:grid;gap:8px;max-width:80ch}
+.script p{color:var(--fg)}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.case{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px}
+.case b{font-family:var(--display);font-size:1.15rem}
+.case span{color:var(--muted);font-size:.95rem}
+.refs{margin:0;padding-left:1.2em;display:grid;gap:6px;font-size:.92rem;color:var(--muted);overflow-wrap:anywhere}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.next a{color:var(--accent);font-weight:600;text-decoration:none}
+</style>
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+.pnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--bg);border-bottom:1px solid var(--line);font-family:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif}
+.pnav-in{max-width:1240px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pnav a{text-decoration:none;color:var(--fg);font-weight:600;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.pnav a:hover{border-color:var(--line)}
+.pnav a.home{font-weight:700;margin-right:auto}
+.pnav a[aria-current="page"]{background:var(--fg);color:var(--bg)}
+.pnav a span:not(.full){font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;opacity:.7;margin-right:4px}
+@media (max-width:560px){.pnav a .full{display:none}.pnav a.home{flex-basis:100%}}
+</style>
+<nav class="pnav" aria-label="Menú del portafolio"><div class="pnav-in">
+<a class="home" href="index.html">← Inicio del portafolio</a>
+<a href="actividad1.html" data-p="1" aria-current="page"><span>01</span><span class="full">Video pitch</span></a>
+<a href="actividad2.html" data-p="2"><span>02</span><span class="full">Infografía</span></a>
+<a href="actividad3.html" data-p="3"><span>03</span><span class="full">Presentación</span></a>
+</div></nav>
+
+<div class="wrap">
+  <header style="display:grid;gap:12px">
+    <span class="eyebrow">Actividad de evaluación 1 · Video pitch · 4 min 48 s</span>
+    <h1>Gestión de servicios TI: la estrategia detrás de la ventaja competitiva</h1>
+    <p class="q">¿Cómo la gestión de servicios TI, con sus características clave, puede ser implementada como una estrategia organizacional para mejorar la ventaja competitiva?</p>
+  </header>
+
+  <div class="player">
+    <div class="video"><video id="v" controls preload="metadata" playsinline src="video-pitch.mp4" poster="poster.jpg"></video></div>
+    <div class="chapters" id="chapters" aria-label="Capítulos del video"><h2>Capítulos</h2></div>
+  </div>
+
+  <section class="script" aria-live="polite">
+    <span class="eyebrow" id="sTitle">Guion</span>
+    <p id="sText"></p>
+  </section>
+
+  <section style="display:grid;gap:12px">
+    <h2>Los tres casos del pitch</h2>
+    <div class="cases">
+      <div class="case"><b>Disney</b><span>Diferenciación: TI protege la experiencia del visitante.</span><button class="ch" data-go="5" style="display:block;padding:4px 0;color:var(--accent);font-weight:600;font-size:.9rem">Ver en el video ▸</button></div>
+      <div class="case"><b>Procter &amp; Gamble</b><span>Liderazgo en costos: 6–8&nbsp;% menos en costos operativos.</span><button class="ch" data-go="6" style="display:block;padding:4px 0;color:var(--accent);font-weight:600;font-size:.9rem">Ver en el video ▸</button></div>
+      <div class="case"><b>Caterpillar</b><span>Confiabilidad: de 60&nbsp;% a más de 90&nbsp;% de respuesta a tiempo.</span><button class="ch" data-go="7" style="display:block;padding:4px 0;color:var(--accent);font-weight:600;font-size:.9rem">Ver en el video ▸</button></div>
+    </div>
+  </section>
+
+  <section style="display:grid;gap:10px">
+    <h2>Referencias</h2>
+    <ol class="refs">
+      <li>Avasant. (2004). <i>Reaping benefits from ITIL</i>. https://avasant.com/report/reaping-benefits-from-itil/</li>
+      <li>AXELOS. (2019). <i>ITIL® Foundation: ITIL 4 edition</i>. TSO.</li>
+      <li>AXELOS. (s.&nbsp;f.). <i>Disney's ITIL® journey</i> [Caso de estudio]. https://axelos.com/resource-hub/case-study/disneys-itil-journey-case-study</li>
+      <li>ISO/IEC. (2018). <i>ISO/IEC 20000-1:2018 Information technology — Service management — Part 1: Service management system requirements</i>.</li>
+      <li>Porter, M. E. (1985). <i>Competitive advantage: Creating and sustaining superior performance</i>. Free Press.</li>
+    </ol>
+  </section>
+
+  <div class="next"><a href="index.html">← Volver al inicio</a><a href="actividad2.html">Siguiente: Actividad 2 · Infografía →</a></div>
+</div>
+<script>
+(function(){
+  var C=[
+    [0,"Portada","Hola, soy Juan David Arias Arenas. En los próximos minutos voy a responder una pregunta clave para cualquier empresa que quiera competir mejor: ¿cómo la gestión de servicios de TI puede convertirse en una estrategia organizacional que genere ventaja competitiva? Lo voy a demostrar con casos reales de empresas que lo lograron."],
+    [24,"La pregunta","Esta es la pregunta que guía el pitch. Mi respuesta corta es esta: la ventaja aparece cuando el área de TI deja de verse solo como soporte técnico y se gestiona como un proveedor de servicios, con procesos claros, metas medibles y foco en el cliente."],
+    [42,"Qué es la gestión de servicios TI","Un conjunto de capacidades para diseñar, entregar, gestionar y mejorar servicios tecnológicos que generan valor. Ya no hablamos de servidores o aplicaciones, sino de servicios que el cliente usa y valora. Los marcos más conocidos son ITIL 4, ISO/IEC 20000 y COBIT."],
+    [72,"Cuatro características clave","Orientación al valor, procesos estandarizados para incidentes, cambios y solicitudes, medición con acuerdos de nivel de servicio, y mejora continua."],
+    [91.5,"De la característica a la ventaja","Siguiendo a Porter: los procesos estandarizados bajan costos, la orientación al valor diferencia, la medición alinea TI con el negocio y la mejora continua da agilidad."],
+    [124.5,"Caso 1: Disney","Disney adoptó ITIL desde mediados de los 2000, formó campeones internos y priorizó la comunicación. Para Disney la tecnología es parte de la experiencia del visitante: si TI falla, falla la magia."],
+    [162.6,"Caso 2: Procter & Gamble","Según Avasant, P&G redujo entre 6 y 8 % sus costos operativos tras adoptar ITIL, y en otro proyecto redujo 10 % las llamadas a la mesa de ayuda. Ventaja de costos."],
+    [188.5,"Caso 3: Caterpillar","Al aplicar ITIL en la gestión de incidentes, Caterpillar pasó de cumplir el tiempo objetivo de respuesta en servicios web en un 60 % de los casos a más del 90 %."],
+    [208.8,"Lluvia de ideas","Menos caídas y más ventas, clientes más satisfechos, costos bajo control, cambios sin sobresaltos, decisiones con datos y una TI que habla el idioma del negocio."],
+    [233.6,"Cómo implementarla","Cuatro pasos: alinear los servicios con los objetivos, diseñar el catálogo y los niveles de servicio, operar y medir, y mejorar y comunicar con campeones internos."],
+    [261.5,"Conclusión","Gestionar TI como servicio convierte la tecnología en una capacidad que reduce costos, diferencia a la empresa y la adapta más rápido que su competencia."],
+    [274.4,"Referencias","Fuentes consultadas para el video pitch."]
+  ];
+  var v=document.getElementById('v'), box=document.getElementById('chapters'), cur=-1;
+  function fmt(s){s=Math.floor(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+  C.forEach(function(c,i){var b=document.createElement('button');b.className='ch';b.dataset.i=i;b.innerHTML='<span class="t">'+fmt(c[0])+'</span><span class="n">'+c[1]+'</span>';b.addEventListener('click',function(){seek(i,true)});box.appendChild(b)});
+  var btns=[].slice.call(box.querySelectorAll('.ch'));
+  function mark(i){if(i===cur)return;cur=i;btns.forEach(function(b,j){b.setAttribute('aria-current',j===i?'true':'false')});document.getElementById('sTitle').textContent='Guion · '+C[i][1];document.getElementById('sText').textContent=C[i][2]}
+  function seek(i,play){try{v.currentTime=C[i][0]+0.2}catch(e){}mark(i);if(play){var p=v.play();if(p&&p.catch)p.catch(function(){})}}
+  v.addEventListener('timeupdate',function(){var t=v.currentTime,i=0;for(var k=0;k<C.length;k++)if(t>=C[k][0])i=k;mark(i)});
+  [].forEach.call(document.querySelectorAll('[data-go]'),function(b){b.addEventListener('click',function(){seek(+b.dataset.go,true);v.scrollIntoView({behavior:'smooth',block:'center'})})});
+  mark(0);
+})();
+</script>
+
+</body>
+</html>

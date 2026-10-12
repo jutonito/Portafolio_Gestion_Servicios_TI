@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ITIL en Horizonte Salud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: escenario 16:9 que escala con su contenedor (unidades cqw); barra de control debajo con navegación, narración y transcripción. En pantallas angostas las diapositivas fluyen a alto automático. */
+:root{
+  --bg:#E9EDF0; --slide:#FFFFFF; --slide-alt:#13212C; --fg:#13212C; --fg-alt:#EEF3F6; --muted:#55646E; --muted-alt:#A7B6C0;
+  --line:#D2DBE1; --sunk:#EEF2F5; --accent:#0A6A93; --accent-soft:#D8EBF3; --signal:#C9611A; --signal-soft:#F7E3D3; --ok:#2C7A4B;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif; --body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B1217; --slide:#17222A; --slide-alt:#0F2A38; --fg:#E4ECF1; --fg-alt:#EEF3F6; --muted:#9AAAB5; --muted-alt:#A9C0CD;
+  --line:#2B3A45; --sunk:#1E2B34; --accent:#4FB3DD; --accent-soft:#163746; --signal:#F0954F; --signal-soft:#3A2617; --ok:#5DBB83; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B1217; --slide:#17222A; --slide-alt:#0F2A38; --fg:#E4ECF1; --fg-alt:#EEF3F6; --muted:#9AAAB5; --muted-alt:#A9C0CD;
+  --line:#2B3A45; --sunk:#1E2B34; --accent:#4FB3DD; --accent-soft:#163746; --signal:#F0954F; --signal-soft:#3A2617; --ok:#5DBB83; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45}
+.app{max-width:1240px;margin:0 auto;padding-inline:16px;padding-block:16px 40px;display:flex;flex-direction:column;gap:12px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px;border-radius:4px}
+a{color:var(--accent)}
+
+.stage{container-type:inline-size;position:relative}
+.slide{display:none;aspect-ratio:16/9;width:100%;background:var(--slide);border-radius:10px;overflow:hidden;position:relative;
+  font-size:1.5cqw;padding:3.2em 4em 3.6em;flex-direction:column;gap:1.2em;box-shadow:0 1px 2px rgba(0,0,0,.08),0 8px 30px rgba(0,0,0,.08)}
+.slide.on{display:flex;animation:in .35s ease}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+.slide.alt{background:var(--slide-alt);color:var(--fg-alt)}
+.slide.alt .muted{color:var(--muted-alt)}
+.slide h1,.slide h2,.slide h3{font-family:var(--display);margin:0;line-height:1.06;text-wrap:balance}
+.slide h1{font-size:3.6em;font-weight:800;font-stretch:78%}
+.slide h2{font-size:2.35em;font-weight:750;font-stretch:84%}
+.slide h3{font-size:1.2em;font-weight:700}
+.slide p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.72em;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.alt .eyebrow{color:var(--signal)}
+.muted{color:var(--muted)}
+.foot{position:absolute;left:4em;right:4em;bottom:1.3em;display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62em;color:var(--muted);letter-spacing:.06em}
+.alt .foot{color:var(--muted-alt)}
+.fill{flex:1;min-height:0;display:flex;flex-direction:column;gap:1em}
+.row{display:flex;gap:1em;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1em}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1em}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8em}
+.card{background:var(--sunk);border-radius:.5em;padding:1em 1.1em;display:flex;flex-direction:column;gap:.4em;min-width:0}
+.alt .card{background:rgba(255,255,255,.07)}
+.card p{font-size:.92em}
+.card .tag{align-self:flex-start}
+.num{font-family:var(--display);font-weight:800;font-stretch:76%;font-size:3.6em;line-height:1;color:var(--signal);font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-family:var(--mono);font-size:.62em;font-weight:700;letter-spacing:.06em;padding:.25em .6em;border-radius:.3em;background:var(--accent-soft);color:var(--accent)}
+.alt .tag{background:rgba(255,255,255,.12);color:var(--fg-alt)}
+.src{font-size:.68em;color:var(--muted)}
+.alt .src{color:var(--muted-alt)}
+ul.clean{margin:0;padding-left:1.1em;display:grid;gap:.35em}
+
+/* Portada */
+.cover{justify-content:space-between}
+.cover .who{display:flex;gap:2em;flex-wrap:wrap;font-family:var(--mono);font-size:.78em;color:var(--muted-alt)}
+.cover .who b{color:var(--fg-alt);display:block;font-family:var(--body);font-size:1.25em}
+.cover .bar{display:flex;gap:.3em}
+.cover .bar i{flex:1;height:.4em;border-radius:1em;background:rgba(255,255,255,.14)}
+.cover .bar i.on{background:var(--signal)}
+
+/* Pregunta */
+.question{font-family:var(--display);font-size:2.2em;font-weight:650;font-stretch:88%;line-height:1.15;max-width:30em}
+.short{border-left:.3em solid var(--signal);padding-left:1em;font-size:1.25em;max-width:40em}
+
+/* Ruta */
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:.6em;overflow:hidden}
+.route div{padding:1.2em;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:.4em}
+.route div:first-child{border-left:none}
+.route .now{background:var(--accent);color:#fff}
+.route .now .muted,.route .now .eyebrow{color:#E3F1F7}
+.route strong{font-family:var(--display);font-size:1.5em}
+
+/* Video */
+.video-box{flex:1;min-height:0;border-radius:.6em;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.video-box video{width:100%;height:100%;object-fit:contain;background:#000}
+.video-fallback{flex:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:1.2em}
+
+/* Prácticas */
+.groups{display:flex;gap:.6em;flex-wrap:wrap}
+.gbtn{border:1px solid var(--line);background:var(--slide);border-radius:2em;padding:.45em 1.1em;font-weight:700;font-size:.95em}
+.gbtn[aria-pressed="true"]{background:var(--fg);color:var(--slide);border-color:var(--fg)}
+.gbtn .c{font-family:var(--mono);margin-left:.4em;color:var(--signal)}
+.plist{display:flex;flex-wrap:wrap;gap:.45em;align-content:flex-start}
+.plist span{background:var(--sunk);border-radius:.35em;padding:.35em .7em;font-size:.88em}
+.plist span.hl{background:var(--accent);color:#fff;font-weight:600}
+
+/* Matriz herramienta-práctica */
+.matrix{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:1.4em;flex:1;min-height:0}
+.tlist{display:flex;flex-direction:column;gap:.45em}
+.tbtn{text-align:left;border:1px solid var(--line);background:var(--slide);border-radius:.45em;padding:.5em .8em;display:flex;justify-content:space-between;gap:.6em;font-size:.95em}
+.tbtn small{font-family:var(--mono);font-size:.68em;color:var(--muted);align-self:center}
+.tbtn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.pgrid{display:flex;flex-direction:column;gap:.5em}
+.pgrid .plist{gap:.35em}
+.pgrid .plist span{font-size:.78em;padding:.28em .6em}
+.tlist .tbtn{padding:.42em .8em}
+.pgrid .lbl{font-family:var(--mono);font-size:.66em;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:.3em}
+.why{background:var(--signal-soft);border-radius:.45em;padding:.6em .9em;font-size:.86em}
+
+/* Casos */
+.case{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:2em;flex:1;min-height:0}
+.kv{display:grid;gap:.75em}
+.kv dt{font-family:var(--mono);font-size:.62em;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.alt .kv dt{color:var(--muted-alt)}
+.kv dd{margin:.15em 0 0;font-size:.98em}
+.chips{display:flex;flex-wrap:wrap;gap:.35em}
+
+/* Ideas */
+.ideas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7em}
+.ibtn{text-align:left;border:1px solid var(--line);background:var(--slide);border-radius:.5em;padding:.75em .9em;display:flex;flex-direction:column;gap:.3em}
+.ibtn b{display:flex;justify-content:space-between;gap:.5em}
+.ibtn b i{font-style:normal;font-family:var(--mono);color:var(--accent)}
+.ibtn span{font-size:.88em;color:var(--muted)}
+.ibtn[aria-expanded="false"] span{display:none}
+
+/* Diagnóstico */
+.pain{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.5em .9em;align-items:start}
+.pain .sev{font-family:var(--mono);font-size:.62em;font-weight:700;padding:.3em .5em;border-radius:.3em;color:#fff;margin-top:.25em}
+.sev.p1{background:#B23A2E}.sev.p2{background:var(--signal)}.sev.p3{background:#8A7A1F}
+
+/* Escenarios de herramientas */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:2em;overflow:hidden;align-self:flex-start}
+.seg button{border:none;background:transparent;padding:.45em 1.1em;font-weight:700;font-size:.92em}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--slide)}
+.stack{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.7em}
+.stack .card h3{font-size:1.05em}
+
+/* Hoja de ruta */
+.phases{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6em}
+.phase{text-align:left;border:1px solid var(--line);background:var(--slide);border-radius:.5em;padding:.8em .9em;display:flex;flex-direction:column;gap:.25em;position:relative}
+.phase .m{font-family:var(--mono);font-size:.66em;color:var(--muted)}
+.phase strong{font-family:var(--display);font-size:1.15em}
+.phase[aria-pressed="true"]{background:var(--fg);color:var(--slide);border-color:var(--fg)}
+.phase[aria-pressed="true"] .m{color:var(--signal)}
+.pdetail{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:1.4em;background:var(--sunk);border-radius:.6em;padding:1.1em 1.3em}
+
+/* KPI */
+table.kpi{width:100%;border-collapse:collapse;font-size:.95em}
+table.kpi th{text-align:left;font-family:var(--mono);font-size:.66em;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:.4em .6em;border-bottom:2px solid var(--fg)}
+table.kpi td{padding:.55em .6em;border-bottom:1px solid var(--line);vertical-align:top}
+table.kpi td.t{font-family:var(--mono);font-weight:700;color:var(--signal);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* Referencias */
+.refs{margin:0;padding-left:1.2em;display:grid;gap:.4em;font-size:.74em;overflow-wrap:anywhere}
+
+/* Controles */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:space-between}
+.cgroup{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cbtn{border:1px solid var(--line);background:var(--slide);border-radius:6px;padding:8px 14px;font-weight:600;font-size:.92rem}
+.cbtn:hover{border-color:var(--accent)}
+.cbtn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.cbtn[aria-pressed="true"]{background:var(--fg);color:var(--slide);border-color:var(--fg)}
+.counter{font-family:var(--mono);font-size:.85rem;color:var(--muted);min-width:5.5em;text-align:center;font-variant-numeric:tabular-nums}
+.progress{height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--signal);width:0;transition:width .25s}
+.transcript{background:var(--slide);border:1px solid var(--line);border-radius:8px;padding:14px 16px;font-size:1rem;max-width:80ch}
+.transcript b{font-family:var(--mono);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:4px}
+.index{background:var(--slide);border:1px solid var(--line);border-radius:8px;padding:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px}
+.index button{border:none;background:transparent;text-align:left;padding:6px 8px;border-radius:5px;font-size:.92rem;display:flex;gap:8px}
+.index button span{font-family:var(--mono);color:var(--muted);min-width:2ch}
+.index button:hover,.index button.cur{background:var(--accent-soft)}
+.hint{font-size:.82rem;color:var(--muted)}
+.notes{display:none}
+
+/* Diapositivas en pantallas angostas: alto automático y letra legible */
+@container (max-width:760px){
+  .slide{aspect-ratio:auto;font-size:14px;padding:1.6em 1.3em 3em;min-height:0}
+  .slide h1{font-size:2.3em}.slide h2{font-size:1.65em}.question{font-size:1.4em}
+  .grid2,.grid3,.grid4,.route,.case,.matrix,.video-fallback,.pdetail,.ideas{grid-template-columns:minmax(0,1fr)}
+  .stack{grid-template-columns:repeat(2,minmax(0,1fr))}.phases{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .route div{border-left:none;border-top:1px solid var(--line)}.route div:first-child{border-top:none}
+  .num{font-size:2.8em}.foot{left:1.3em;right:1.3em}
+  .video-box{aspect-ratio:16/9;flex:none}
+  .kpi-wrap{overflow-x:auto}
+}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none}.progress i{transition:none}}
+</style>
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<style>
+.pnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--bg);border-bottom:1px solid var(--line);font-family:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif}
+.pnav-in{max-width:1240px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pnav a{text-decoration:none;color:var(--fg);font-weight:600;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
+.pnav a:hover{border-color:var(--line)}
+.pnav a.home{font-weight:700;margin-right:auto}
+.pnav a[aria-current="page"]{background:var(--fg);color:var(--bg)}
+.pnav a span:not(.full){font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;opacity:.7;margin-right:4px}
+@media (max-width:560px){.pnav a .full{display:none}.pnav a.home{flex-basis:100%}}
+</style>
+<nav class="pnav" aria-label="Menú del portafolio"><div class="pnav-in">
+<a class="home" href="index.html">← Inicio del portafolio</a>
+<a href="actividad1.html" data-p="1"><span>01</span><span class="full">Video pitch</span></a>
+<a href="actividad2.html" data-p="2"><span>02</span><span class="full">Infografía</span></a>
+<a href="actividad3.html" data-p="3" aria-current="page"><span>03</span><span class="full">Presentación</span></a>
+</div></nav>
+
+
+<div class="app">
+<div class="stage" id="stage">
+
+<!-- 1 Portada -->
+<section class="slide alt cover" data-title="Portada">
+  <div style="display:flex;flex-direction:column;gap:1em">
+    <span class="eyebrow">Actividad de evaluación 3 · Presentación interactiva</span>
+    <h1>Propuesta de implementación de la gestión de servicios de TI con ITIL&nbsp;4</h1>
+    <p class="muted" style="font-size:1.3em;max-width:34em">Caso de estudio: IPS Horizonte Salud, una clínica colombiana (caso hipotético)</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:1.2em">
+    <div class="bar" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    <div class="who"><span>Autor<b>Juan David Arias Arenas</b></span><span>Curso<b>Gestión de Servicios de TI</b></span><span>Cómo navegar<b>Flechas ← → · botón Escuchar</b></span></div>
+  </div>
+  <div class="notes">Hola, soy Juan David Arias Arenas. Esta es mi presentación para la actividad de evaluación tres. Voy a proponer cómo implementar la gestión de servicios de tecnologías de la información con el marco ITIL cuatro en un caso de estudio: IPS Horizonte Salud, una clínica colombiana hipotética. Puede avanzar con las flechas y escuchar la narración de cada diapositiva con el botón Escuchar.</div>
+</section>
+
+<!-- 2 Pregunta -->
+<section class="slide" data-title="La pregunta de investigación">
+  <span class="eyebrow">La pregunta de investigación</span>
+  <div class="fill" style="justify-content:center;gap:1.6em">
+    <p class="question">¿Es posible que las herramientas tecnológicas y métodos para la gestión de servicios de TI apoyen las prácticas de gestión general, de servicios y técnicas del marco de referencia ITIL?</p>
+    <p class="short"><b>Respuesta corta: sí.</b> Cada práctica de ITIL necesita un medio para ejecutarse, medirse y mejorarse. Las herramientas automatizan y registran; los métodos ordenan el trabajo. Los casos reales y la propuesta lo demuestran.</p>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>02</span></div>
+  <div class="notes">La pregunta que guía esta actividad es si las herramientas tecnológicas y los métodos para la gestión de servicios de TI pueden apoyar las prácticas generales, de servicio y técnicas de ITIL. Mi respuesta corta es que sí. Cada práctica de ITIL necesita un medio para ejecutarse, medirse y mejorarse. Las herramientas automatizan y dejan registro, y los métodos como DevOps o Lean ordenan el trabajo. Voy a demostrarlo con casos reales y con una propuesta concreta.</div>
+</section>
+
+<!-- 3 Recorrido -->
+<section class="slide" data-title="Recorrido del curso">
+  <span class="eyebrow">De dónde viene esta propuesta</span>
+  <h2>Tres actividades, una sola línea de argumento</h2>
+  <div class="route">
+    <div><span class="eyebrow">Actividad 1 · Video pitch</span><strong>El porqué</strong><p class="muted">La gestión de servicios como estrategia de ventaja competitiva: Disney, P&amp;G y Caterpillar.</p></div>
+    <div><span class="eyebrow">Actividad 2 · Infografía</span><strong>El cómo se organiza</strong><p class="muted">Herramientas de innovación y mejora al servicio de la gerencia, dentro del sistema de valor del servicio.</p></div>
+    <div class="now"><span class="eyebrow">Actividad 3 · Esta presentación</span><strong>El con qué se implementa</strong><p class="muted">Prácticas de ITIL, herramientas concretas y una propuesta de implementación.</p></div>
+  </div>
+  <p class="muted" style="font-size:1.05em;max-width:44em">Las prácticas son uno de los cinco componentes del sistema de valor del servicio. Esta actividad baja del sistema completo a las prácticas y a las herramientas que las hacen posibles.</p>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>03</span></div>
+  <div class="notes">Esta propuesta cierra un recorrido de tres actividades. En la primera expliqué por qué la gestión de servicios es una estrategia de ventaja competitiva. En la segunda mostré cómo se organiza, con el sistema de valor del servicio de ITIL. Ahora, en la tercera, bajo al nivel de las prácticas y de las herramientas concretas que permiten implementarlas.</div>
+</section>
+
+<!-- 4 Video -->
+<section class="slide alt" data-title="Video: el punto de partida">
+  <span class="eyebrow">Video · Actividad 1</span>
+  <h2>El punto de partida: TI como estrategia</h2>
+  <div class="video-box" id="videoBox" hidden><video id="pitch" controls preload="metadata" playsinline poster="poster.jpg"></video></div>
+  <div class="video-fallback" id="videoFallback">
+    <div class="card" style="justify-content:center;gap:.8em">
+      <span class="tag">Mensaje del video pitch</span>
+      <p style="font-size:1.35em;font-weight:600">Gestionar TI como servicio convierte la tecnología en una capacidad que reduce costos, diferencia a la empresa y la adapta más rápido que su competencia.</p>
+    </div>
+    <div style="display:grid;gap:.7em">
+      <div class="card"><h3>Disney</h3><p>Diferenciación: TI protege la experiencia del visitante.</p></div>
+      <div class="card"><h3>Procter &amp; Gamble</h3><p>Costos: 6–8&nbsp;% menos en costos operativos.</p></div>
+      <div class="card"><h3>Caterpillar</h3><p>Confiabilidad: de 60&nbsp;% a más de 90&nbsp;% de respuesta a tiempo.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>04</span></div>
+  <div class="notes">Este es el punto de partida. En mi video pitch de la actividad uno mostré que gestionar TI como servicio reduce costos, diferencia a la empresa y la hace más ágil. Disney lo usó para proteger la experiencia del visitante, Procter and Gamble redujo entre seis y ocho por ciento sus costos operativos, y Caterpillar pasó de sesenta a más de noventa por ciento de respuesta a tiempo ante incidentes.</div>
+</section>
+
+<!-- 5 Prácticas -->
+<section class="slide" data-title="Las 34 prácticas de ITIL 4">
+  <span class="eyebrow">Fundamentos · ITIL 4</span>
+  <h2>34 prácticas en tres grupos</h2>
+  <div class="groups" role="group" aria-label="Grupos de prácticas">
+    <button class="gbtn" data-g="gen" aria-pressed="true">Generales<span class="c">14</span></button>
+    <button class="gbtn" data-g="ser" aria-pressed="false">De servicio<span class="c">17</span></button>
+    <button class="gbtn" data-g="tec" aria-pressed="false">Técnicas<span class="c">3</span></button>
+  </div>
+  <p class="muted" id="gdesc" style="font-size:1em"></p>
+  <div class="plist" id="plist"></div>
+  <p class="src">Resaltadas: las prácticas que prioriza la propuesta para Horizonte Salud. Fuente: AXELOS (2019).</p>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>05</span></div>
+  <div class="notes">ITIL cuatro define treinta y cuatro prácticas en tres grupos. Catorce prácticas generales, que vienen de la gestión empresarial, como la mejora continua o la gestión de la seguridad de la información. Diecisiete prácticas de servicio, propias de la gestión de servicios, como la mesa de servicio, la gestión de incidentes y la habilitación del cambio. Y tres prácticas técnicas, que vienen de la gestión de tecnología: gestión de despliegues, gestión de infraestructura y plataforma, y desarrollo y gestión de software. Puede hacer clic en cada grupo para ver sus prácticas.</div>
+</section>
+
+<!-- 6 Matriz -->
+<section class="slide" data-title="Herramientas y métodos que soportan las prácticas">
+  <span class="eyebrow">Herramientas y métodos → prácticas</span>
+  <h2>Cada herramienta sostiene prácticas concretas</h2>
+  <div class="matrix">
+    <div class="tlist" id="tlist" role="group" aria-label="Herramientas y métodos"></div>
+    <div class="pgrid">
+      <div><div class="lbl">Generales</div><div class="plist" id="mg"></div></div>
+      <div><div class="lbl">De servicio</div><div class="plist" id="ms"></div></div>
+      <div><div class="lbl">Técnicas</div><div class="plist" id="mt"></div></div>
+      <p class="why" id="mwhy"></p>
+    </div>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>06</span></div>
+  <div class="notes">Esta matriz responde la pregunta de forma directa. Al seleccionar una herramienta o un método, se resaltan las prácticas de ITIL que apoya. Por ejemplo, una plataforma de gestión de servicios como ServiceNow, Jira Service Management o GLPI soporta la mesa de servicio, los incidentes, las solicitudes, los cambios y los activos. Una herramienta de monitoreo como Zabbix soporta el monitoreo de eventos, la disponibilidad y la capacidad. Y un método como DevOps conecta la habilitación del cambio con las prácticas técnicas de despliegue y desarrollo de software. Las tres familias de prácticas, generales, de servicio y técnicas, quedan cubiertas.</div>
+</section>
+
+<!-- 7 Caso Fujitsu -->
+<section class="slide" data-title="Caso 1: Fujitsu + ServiceNow">
+  <span class="eyebrow">Caso real 1 · Tecnología · Japón</span>
+  <h2>Fujitsu unificó su mesa de servicio en ServiceNow</h2>
+  <div class="case">
+    <div class="card" style="justify-content:center;gap:.6em">
+      <span class="num">−40&nbsp;%</span>
+      <p style="font-size:1.15em;font-weight:600">en el tiempo de resolución de incidentes</p>
+      <p class="muted">Más de 500 sistemas internos atendidos por una sola mesa de servicio.</p>
+    </div>
+    <dl class="kv">
+      <div><dt>Problema</dt><dd>Cada departamento operaba sus propios sistemas y las mesas de servicio estaban dispersas, lo que reducía la eficiencia y la calidad del soporte.</dd></div>
+      <div><dt>Herramienta</dt><dd>ServiceNow ITSM como mesa de servicio única, con un repositorio de conocimiento compartido.</dd></div>
+      <div><dt>Prácticas de ITIL apoyadas</dt><dd class="chips"><span class="tag">Mesa de servicio</span><span class="tag">Gestión de incidentes</span><span class="tag">Gestión del conocimiento</span></dd></div>
+      <div><dt>Lectura</dt><dd>La herramienta hizo posible estandarizar la práctica; sin una plataforma común, unificar 500 sistemas no sería viable.</dd></div>
+    </dl>
+  </div>
+  <p class="src">Fuente: Fujitsu (2023), historia de cliente.</p>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>07</span></div>
+  <div class="notes">Primer caso real: Fujitsu. Cada departamento operaba sus propios sistemas y las mesas de servicio estaban dispersas. La empresa implementó ServiceNow como mesa de servicio única para más de quinientos sistemas internos, con un repositorio de conocimiento compartido. El resultado reportado fue una reducción del cuarenta por ciento en el tiempo de resolución de incidentes. Aquí la herramienta apoya tres prácticas: mesa de servicio, gestión de incidentes y gestión del conocimiento.</div>
+</section>
+
+<!-- 8 Caso Nextiva -->
+<section class="slide" data-title="Caso 2: Nextiva + Jira Service Management">
+  <span class="eyebrow">Caso real 2 · Telecomunicaciones · Estados Unidos</span>
+  <h2>Nextiva automatizó incidentes y cambios con Jira Service Management</h2>
+  <div class="case">
+    <dl class="kv">
+      <div><dt>Problema</dt><dd>La plantilla casi se duplicó en tres años; los sistemas desconectados y los silos entre desarrollo y operaciones ponían en riesgo los acuerdos de nivel de servicio.</dd></div>
+      <div><dt>Herramienta y método</dt><dd>Jira Service Management, Confluence y automatización hacia Slack, dentro de una cultura ágil y DevOps.</dd></div>
+      <div><dt>Prácticas de ITIL apoyadas</dt><dd class="chips"><span class="tag">Gestión de incidentes</span><span class="tag">Habilitación del cambio</span><span class="tag">Mesa de servicio</span><span class="tag">Niveles de servicio</span></dd></div>
+    </dl>
+    <div style="display:grid;gap:.6em;align-content:start">
+      <div class="card"><h3>Incidentes</h3><p>Severidad y componente obligatorios, alertas de guardia, escalamiento para cumplir los SLA y análisis posterior en máximo tres días.</p></div>
+      <div class="card"><h3>Cambios</h3><p>Un solo flujo con cuatro tipos de cambio, aprobaciones automáticas y alertas cuando un cambio excede su tiempo.</p></div>
+      <div class="card"><h3>Lectura</h3><p>El método (DevOps) y la herramienta juntos rompen el silo entre desarrollo y operación, que es lo que ITIL 4 pide.</p></div>
+    </div>
+  </div>
+  <p class="src">Fuente: Atlassian (s.&nbsp;f.), historia de cliente de Nextiva. El caso describe mejoras cualitativas.</p>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>08</span></div>
+  <div class="notes">Segundo caso real: Nextiva, una empresa de comunicaciones de Estados Unidos. Su plantilla casi se duplicó en tres años, y los silos entre desarrollo y operaciones ponían en riesgo sus acuerdos de nivel de servicio. Con Jira Service Management definió un flujo de incidentes con severidad obligatoria, alertas de guardia y análisis posterior en máximo tres días, y un flujo único de cambios con cuatro tipos y aprobaciones automáticas. Este caso muestra cómo un método, DevOps, y una herramienta se combinan para apoyar la gestión de incidentes y la habilitación del cambio.</div>
+</section>
+
+<!-- 9 Cifras -->
+<section class="slide alt" data-title="Caso 3: resultados medibles">
+  <span class="eyebrow">Caso real 3 · Evidencia cuantitativa</span>
+  <h2>Cuando las prácticas se aplican, los resultados se miden</h2>
+  <div class="grid3" style="flex:1;align-content:center">
+    <div class="card"><span class="num">−92&nbsp;%</span><h3>Capital One</h3><p class="muted">Incidentes críticos para el negocio, en dos años.</p><span class="tag">Gestión de incidentes y problemas</span></div>
+    <div class="card"><span class="num">−40&nbsp;%</span><h3>Nationwide Insurance</h3><p class="muted">Caídas de sistemas; retorno estimado de USD&nbsp;4,3 millones en tres años.</p><span class="tag">Disponibilidad y problemas</span></div>
+    <div class="card"><span class="num">−50&nbsp;%</span><h3>Pershing</h3><p class="muted">Tiempo de respuesta a incidentes en el primer año, tras reestructurar la mesa de servicio.</p><span class="tag">Mesa de servicio</span></div>
+  </div>
+  <p class="src">Fuente: White (2026), CIO, con datos de Pink Elephant. Las prácticas asociadas son una interpretación propia de cada resultado.</p>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>09</span></div>
+  <div class="notes">El tercer bloque de evidencia reúne cifras de tres organizaciones. Capital One redujo noventa y dos por ciento sus incidentes críticos en dos años. Nationwide Insurance redujo cuarenta por ciento las caídas de sus sistemas y estimó un retorno de cuatro coma tres millones de dólares en tres años. Y Pershing, al reestructurar su mesa de servicio según ITIL, redujo a la mitad el tiempo de respuesta a incidentes en el primer año.</div>
+</section>
+
+<!-- 10 Lluvia de ideas -->
+<section class="slide" data-title="Lluvia de ideas: competitividad">
+  <span class="eyebrow">Lluvia de ideas</span>
+  <h2>Cómo las prácticas de ITIL vuelven competitiva a una organización</h2>
+  <p class="muted">Haga clic en cada idea para ver la práctica que la respalda.</p>
+  <div class="ideas" id="ideas">
+    <button class="ibtn" aria-expanded="false"><b>Servicio siempre disponible <i>+</i></b><span>Monitoreo y eventos, gestión de la disponibilidad y continuidad del servicio.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Clientes atendidos más rápido <i>+</i></b><span>Mesa de servicio, gestión de incidentes y gestión de solicitudes.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Innovar sin romper <i>+</i></b><span>Habilitación del cambio, gestión de despliegues y DevOps.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Menos problemas repetidos <i>+</i></b><span>Gestión de problemas: se ataca la causa raíz, no solo el síntoma.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Confianza y cumplimiento <i>+</i></b><span>Gestión de la seguridad de la información y gestión de riesgos.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Decisiones con datos <i>+</i></b><span>Medición y reporte, gestión de niveles de servicio.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Conocimiento que se queda <i>+</i></b><span>Gestión del conocimiento: la solución no se va con la persona.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Costos visibles <i>+</i></b><span>Gestión financiera del servicio y gestión de activos de TI.</span></button>
+    <button class="ibtn" aria-expanded="false"><b>Mejora permanente <i>+</i></b><span>Mejora continua: cada incidente alimenta un aprendizaje.</span></button>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>10</span></div>
+  <div class="notes">De mi lluvia de ideas salen nueve formas en que las prácticas de ITIL vuelven más competitiva a una organización: servicios siempre disponibles, clientes atendidos más rápido, innovación sin romper la operación, menos problemas repetidos, confianza y cumplimiento normativo, decisiones basadas en datos, conocimiento que se queda en la organización, costos visibles y mejora permanente. Cada idea se apoya en una práctica concreta.</div>
+</section>
+
+<!-- 11 Caso de estudio -->
+<section class="slide" data-title="Caso de estudio: diagnóstico">
+  <span class="eyebrow">Caso de estudio · Diagnóstico</span>
+  <h2>IPS Horizonte Salud: hoy la tecnología atiende pacientes, pero nadie la gestiona como servicio</h2>
+  <div class="grid2" style="flex:1">
+    <div class="card" style="gap:.6em">
+      <span class="tag">Contexto (caso hipotético)</span>
+      <ul class="clean">
+        <li>Clínica de mediana complejidad con dos sedes en Colombia.</li>
+        <li>Servicios digitales críticos: historia clínica electrónica, agendamiento web, teleconsulta y facturación electrónica.</li>
+        <li>Área de TI pequeña, con soporte de proveedores externos.</li>
+        <li>Tendencia "salud bajo control": los pacientes quieren seguir su salud desde el celular.</li>
+      </ul>
+    </div>
+    <div style="display:grid;gap:.6em;align-content:start">
+      <div class="pain"><span class="sev p1">P1</span><p><b>Caídas de la historia clínica</b> en horario de consulta, sin aviso previo ni causa raíz identificada.</p></div>
+      <div class="pain"><span class="sev p1">P1</span><p><b>Datos de salud sensibles</b> sin controles formales de acceso (Ley 1581 de 2012).</p></div>
+      <div class="pain"><span class="sev p2">P2</span><p><b>Soporte por WhatsApp y correo</b>, sin registro, prioridades ni tiempos de respuesta.</p></div>
+      <div class="pain"><span class="sev p2">P2</span><p><b>Cambios en producción sin aprobación</b>, que generan nuevos incidentes.</p></div>
+      <div class="pain"><span class="sev p3">P3</span><p><b>Sin indicadores</b>: la gerencia no sabe cuánto cuesta ni cómo se desempeña TI.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>11</span></div>
+  <div class="notes">Ahora paso a la propuesta. El caso de estudio es IPS Horizonte Salud, una clínica colombiana hipotética de mediana complejidad, con dos sedes y servicios digitales críticos: historia clínica electrónica, agendamiento web, teleconsulta y facturación electrónica. El diagnóstico muestra cinco problemas, clasificados por prioridad como si fueran tickets: caídas de la historia clínica en horario de consulta, datos sensibles sin controles formales, soporte por WhatsApp sin registro, cambios en producción sin aprobación, y ausencia de indicadores.</div>
+</section>
+
+<!-- 12 Prácticas priorizadas -->
+<section class="slide" data-title="Propuesta: prácticas priorizadas">
+  <span class="eyebrow">Propuesta · Prácticas priorizadas</span>
+  <h2>Comenzar donde se está: 12 prácticas, no 34</h2>
+  <div class="grid3" style="flex:1">
+    <div class="card" style="gap:.6em"><span class="tag">Generales · 4</span>
+      <ul class="clean"><li><b>Seguridad de la información</b>: controles de acceso a la historia clínica.</li><li><b>Gestión del conocimiento</b>: soluciones documentadas.</li><li><b>Medición y reporte</b>: tablero para la gerencia.</li><li><b>Mejora continua</b>: registro de mejoras.</li></ul></div>
+    <div class="card" style="gap:.6em"><span class="tag">De servicio · 6</span>
+      <ul class="clean"><li><b>Mesa de servicio</b>: un solo punto de contacto.</li><li><b>Gestión de incidentes</b> con prioridades P1–P4.</li><li><b>Gestión de problemas</b>: causa raíz de las caídas.</li><li><b>Habilitación del cambio</b>: aprobar antes de tocar producción.</li><li><b>Monitoreo y eventos</b>.</li><li><b>Niveles de servicio</b> con las áreas clínicas.</li></ul></div>
+    <div class="card" style="gap:.6em"><span class="tag">Técnicas · 2</span>
+      <ul class="clean"><li><b>Gestión de infraestructura y plataforma</b>: servidores y nube de la historia clínica.</li><li><b>Gestión de despliegues</b>: versiones probadas y reversibles.</li></ul>
+      <p class="muted" style="margin-top:auto">Cada práctica responde a uno de los cinco problemas del diagnóstico.</p></div>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>12</span></div>
+  <div class="notes">Siguiendo el principio guía de comenzar donde se está, la propuesta no implementa las treinta y cuatro prácticas, sino doce. Cuatro generales: seguridad de la información, gestión del conocimiento, medición y reporte, y mejora continua. Seis de servicio: mesa de servicio, incidentes, problemas, habilitación del cambio, monitoreo y eventos, y niveles de servicio. Y dos técnicas: gestión de infraestructura y plataforma, y gestión de despliegues. Cada una responde a un problema del diagnóstico.</div>
+</section>
+
+<!-- 13 Herramientas -->
+<section class="slide" data-title="Propuesta: herramientas">
+  <span class="eyebrow">Propuesta · Herramientas por escenario</span>
+  <h2>Dos caminos según el presupuesto</h2>
+  <div class="seg" role="group" aria-label="Escenario de presupuesto"><button data-s="low" aria-pressed="true">Presupuesto bajo</button><button data-s="mid" aria-pressed="false">Presupuesto medio</button></div>
+  <div class="stack" id="stack"></div>
+  <p class="why" id="stackWhy"></p>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>13</span></div>
+  <div class="notes">Para las herramientas propongo dos escenarios. Con presupuesto bajo, la clínica puede usar software libre: GLPI para la mesa de servicio, incidentes, cambios y activos; Zabbix para el monitoreo; GitLab para los despliegues; y Power BI Desktop para los tableros. Con presupuesto medio, puede adoptar Jira Service Management con Confluence, que reduce el esfuerzo de configuración y trae automatización. En ambos casos cada herramienta queda asociada a prácticas específicas de ITIL.</div>
+</section>
+
+<!-- 14 Hoja de ruta -->
+<section class="slide" data-title="Propuesta: hoja de ruta">
+  <span class="eyebrow">Propuesta · Hoja de ruta de 12 meses</span>
+  <h2>Cuatro fases guiadas por el modelo de mejora continua</h2>
+  <div class="phases" id="phases"></div>
+  <div class="pdetail" id="pdetail"></div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>14</span></div>
+  <div class="notes">La implementación se organiza en cuatro fases durante doce meses, siguiendo el modelo de mejora continua de ITIL. Primero, diagnóstico y línea base. Segundo, la mesa de servicio única con incidentes, solicitudes y base de conocimiento. Tercero, estabilizar con gestión de cambios, problemas, monitoreo y niveles de servicio. Y cuarto, medir, automatizar e innovar, incluyendo un piloto de seguimiento remoto de pacientes. Puede hacer clic en cada fase para ver sus entregables.</div>
+</section>
+
+<!-- 15 KPI -->
+<section class="slide" data-title="Propuesta: indicadores">
+  <span class="eyebrow">Propuesta · Indicadores</span>
+  <h2>Cómo sabremos que funciona</h2>
+  <div class="kpi-wrap">
+  <table class="kpi">
+    <thead><tr><th>Indicador</th><th>Práctica de ITIL</th><th>Meta a 12 meses</th><th>Herramienta que lo mide</th></tr></thead>
+    <tbody>
+      <tr><td>Disponibilidad de la historia clínica</td><td>Monitoreo y eventos · Infraestructura</td><td class="t">≥ 99,5 %</td><td>Zabbix</td></tr>
+      <tr><td>Tiempo medio de resolución de incidentes P1</td><td>Gestión de incidentes</td><td class="t">≤ 4 h</td><td>GLPI / Jira SM</td></tr>
+      <tr><td>Cumplimiento de acuerdos de nivel de servicio</td><td>Niveles de servicio</td><td class="t">≥ 90 %</td><td>GLPI / Jira SM</td></tr>
+      <tr><td>Cambios exitosos sin incidente posterior</td><td>Habilitación del cambio · Despliegues</td><td class="t">≥ 95 %</td><td>GitLab + registro de cambios</td></tr>
+      <tr><td>Solicitudes resueltas en el primer contacto</td><td>Mesa de servicio · Conocimiento</td><td class="t">≥ 70 %</td><td>Base de conocimiento</td></tr>
+      <tr><td>Satisfacción del personal clínico</td><td>Medición y reporte</td><td class="t">≥ 4,3 / 5</td><td>Encuesta al cierre del ticket</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src">Metas propuestas para el caso hipotético; se ajustan con la línea base de la fase 1.</p>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>15</span></div>
+  <div class="notes">Para saber si la propuesta funciona defino seis indicadores, cada uno ligado a una práctica y a la herramienta que lo mide. Disponibilidad de la historia clínica de al menos noventa y nueve coma cinco por ciento. Resolución de incidentes críticos en cuatro horas o menos. Cumplimiento de niveles de servicio de al menos noventa por ciento. Noventa y cinco por ciento de cambios exitosos. Setenta por ciento de solicitudes resueltas en el primer contacto. Y una satisfacción del personal clínico de al menos cuatro coma tres sobre cinco. Estas metas se ajustan con la línea base de la primera fase.</div>
+</section>
+
+<!-- 16 Tendencia, vigilancia y financiación -->
+<section class="slide alt" data-title="Valor agregado: tendencia y financiación">
+  <span class="eyebrow">Valor agregado · De la operación a la innovación</span>
+  <h2>Salud bajo control: el siguiente servicio de Horizonte Salud</h2>
+  <div class="grid3" style="flex:1">
+    <div class="card" style="gap:.6em"><span class="tag">Tendencia</span><h3>Seguimiento remoto de pacientes</h3><p>Con la operación estable, la clínica puede ofrecer un servicio nuevo: seguimiento de pacientes crónicos con apps y dispositivos portátiles, conectado a la teleconsulta.</p><p class="muted">Prácticas: diseño del servicio, catálogo de servicios, seguridad de la información.</p></div>
+    <div class="card" style="gap:.6em"><span class="tag">Vigilancia tecnológica</span><h3>Antes de construir, buscar</h3><ul class="clean"><li>Google Patents y Lens.org: patentes sobre "monitoreo remoto de pacientes".</li><li>Connected Papers y Google Scholar: evidencia académica.</li><li>Google Trends: interés de los usuarios en Colombia.</li></ul></div>
+    <div class="card" style="gap:.6em"><span class="tag">Financiación</span><h3>Fuentes a explorar</h3><ul class="clean"><li>Convocatorias de Minciencias.</li><li>Programas de iNNpulsa Colombia.</li><li>Líneas de crédito de Bancóldex.</li></ul><p class="muted">Cada convocatoria tiene requisitos propios; hay que verificar las vigentes.</p></div>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>16</span></div>
+  <div class="notes">La gestión de servicios no solo estabiliza; también abre la puerta a innovar. Conectando con la tendencia salud bajo control, la clínica podría ofrecer un servicio nuevo de seguimiento remoto de pacientes crónicos con aplicaciones y dispositivos portátiles. Antes de construirlo, haría vigilancia tecnológica en Google Patents, Lens.org, Connected Papers y Google Scholar, y revisaría el interés de los usuarios en Google Trends. Para financiarlo, exploraría convocatorias de Minciencias, programas de iNNpulsa Colombia y líneas de crédito de Bancóldex.</div>
+</section>
+
+<!-- 17 Conclusión -->
+<section class="slide alt" data-title="Conclusión">
+  <span class="eyebrow">Conclusión</span>
+  <div class="fill" style="justify-content:center;gap:1.4em">
+    <h1 style="font-size:3em;max-width:22em">Sí: sin herramientas y métodos, las prácticas de ITIL se quedan en el papel.</h1>
+    <div class="grid3">
+      <div class="card"><h3>Generales</h3><p>Analítica y bases de conocimiento convierten la mejora continua y la medición en rutina.</p></div>
+      <div class="card"><h3>De servicio</h3><p>Plataformas ITSM y monitoreo hacen trazables los incidentes, cambios y niveles de servicio.</p></div>
+      <div class="card"><h3>Técnicas</h3><p>DevOps y la automatización de despliegues aplican cambios de forma segura y repetible.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>17</span></div>
+  <div class="notes">En conclusión, la respuesta a la pregunta es sí. Sin herramientas y métodos, las prácticas de ITIL se quedan en el papel. En las prácticas generales, la analítica y las bases de conocimiento convierten la mejora continua y la medición en rutina. En las prácticas de servicio, las plataformas de gestión de servicios y el monitoreo hacen trazables los incidentes, cambios y niveles de servicio. Y en las prácticas técnicas, DevOps y la automatización permiten desplegar cambios de forma segura. Fujitsu, Nextiva, Capital One, Nationwide y Pershing lo demuestran, y la propuesta para Horizonte Salud muestra cómo aplicarlo. Gracias por su atención.</div>
+</section>
+
+<!-- 18 Referencias -->
+<section class="slide" data-title="Referencias">
+  <span class="eyebrow">Referencias</span>
+  <h2>Fuentes consultadas</h2>
+  <ol class="refs">
+    <li>Atlassian. (s.&nbsp;f.). <i>Nextiva is modernizing enterprise ITSM with elegant, automated change management using Jira Service Management</i> [Historia de cliente]. https://www.atlassian.com/customers/nextiva-itsm</li>
+    <li>AXELOS. (2019). <i>ITIL® Foundation: ITIL 4 edition</i>. TSO.</li>
+    <li>Fujitsu. (2023, 24 de octubre). <i>Fujitsu Limited: ServiceNow IT Service Management (ITSM) to improve operational efficiency</i> [Historia de cliente]. https://global.fujitsu/en-US/customer-stories/cs-fujitsu-servicenow-20231024</li>
+    <li>ISO/IEC. (2018). <i>ISO/IEC 20000-1:2018 Information technology — Service management — Part 1: Service management system requirements</i>.</li>
+    <li>Ley 1581 de 2012. Por la cual se dictan disposiciones generales para la protección de datos personales. 17 de octubre de 2012. Diario Oficial n.º 48.587.</li>
+    <li>Vinogradsky, V. (2008). The ITIL® framework: And how it can improve your service desk. <i>HDI SupportWorld</i>, julio/agosto.</li>
+    <li>White, S. K. (2026, 24 de abril). What is ITIL? Your guide to the IT Infrastructure Library. <i>CIO</i>. https://www.cio.com/article/272361/infrastructure-it-infrastructure-library-itil-definition-and-solutions.html</li>
+  </ol>
+  <div class="foot"><span>Actividad 3 · Juan David Arias Arenas</span><span>18</span></div>
+  <div class="notes">Estas son las fuentes consultadas para la presentación.</div>
+</section>
+
+</div>
+
+<div class="progress" aria-hidden="true"><i id="prog"></i></div>
+<div class="controls">
+  <div class="cgroup">
+    <button class="cbtn" id="prev" aria-label="Diapositiva anterior">← Anterior</button>
+    <span class="counter" id="counter" aria-live="polite">1 / 18</span>
+    <button class="cbtn primary" id="next" aria-label="Diapositiva siguiente">Siguiente →</button>
+  </div>
+  <div class="cgroup">
+    <button class="cbtn" id="listen" aria-pressed="false">▶ Escuchar narración</button>
+    <button class="cbtn" id="auto" aria-pressed="false">Modo presentación automática</button>
+    <button class="cbtn" id="showT" aria-pressed="false">Transcripción</button>
+    <button class="cbtn" id="showI" aria-pressed="false">Índice</button>
+  </div>
+</div>
+<p class="hint" id="hint">Use las flechas del teclado para avanzar. El botón Escuchar lee la narración de cada diapositiva con la voz del navegador.</p>
+<div class="transcript" id="transcript" hidden><b id="tTitle">Narración</b><p id="tText"></p></div>
+<div class="index" id="index" hidden></div>
+</div>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')), cur=0, N=slides.length;
+  var counter=document.getElementById('counter'), prog=document.getElementById('prog');
+  var tTitle=document.getElementById('tTitle'), tText=document.getElementById('tText'), index=document.getElementById('index');
+  var synth=window.speechSynthesis||null, speaking=false, autoMode=false, voice=null;
+
+  function pickVoice(){ if(!synth)return; var v=synth.getVoices(); voice=v.filter(function(x){return /^es[-_]CO/i.test(x.lang)})[0]||v.filter(function(x){return /^es[-_](419|MX|US)/i.test(x.lang)})[0]||v.filter(function(x){return /^es/i.test(x.lang)})[0]||null; }
+  if(synth){pickVoice(); if('onvoiceschanged' in synth) synth.onvoiceschanged=pickVoice;}
+
+  slides.forEach(function(s,i){var b=document.createElement('button');b.innerHTML='<span>'+(i+1)+'</span>'+s.dataset.title;b.addEventListener('click',function(){show(i)});index.appendChild(b)});
+
+  function notes(i){var n=slides[i].querySelector('.notes');return n?n.textContent.trim():''}
+  function show(i){
+    stopSpeech(false);
+    cur=Math.max(0,Math.min(N-1,i));
+    slides.forEach(function(s,j){s.classList.toggle('on',j===cur)});
+    counter.textContent=(cur+1)+' / '+N; prog.style.width=((cur+1)/N*100)+'%';
+    tTitle.textContent=(cur+1)+'. '+slides[cur].dataset.title; tText.textContent=notes(cur);
+    [].forEach.call(index.children,function(b,j){b.classList.toggle('cur',j===cur)});
+    try{history.replaceState(null,'','#s'+(cur+1))}catch(e){}
+    var v=document.getElementById('pitch'); if(v&&!v.paused&&!slides[cur].contains(v))v.pause();
+    if(autoMode) speak();
+  }
+  function speak(){
+    if(!synth){document.getElementById('hint').textContent='Este navegador no permite la narración por voz. Active la transcripción para leerla.';document.getElementById('transcript').hidden=false;document.getElementById('showT').setAttribute('aria-pressed','true');return}
+    synth.cancel(); var u=new SpeechSynthesisUtterance(notes(cur)); u.lang=voice?voice.lang:'es-CO'; if(voice)u.voice=voice; u.rate=1;
+    u.onend=function(){ if(!speaking)return; speaking=false; setListen(); if(autoMode){ if(cur<N-1) setTimeout(function(){show(cur+1)},700); else {autoMode=false;setAuto();} } };
+    speaking=true; setListen(); synth.speak(u);
+  }
+  function stopSpeech(keepAuto){ if(synth&&speaking){speaking=false;synth.cancel();} if(keepAuto===true){} setListen(); }
+  function setListen(){var b=document.getElementById('listen');b.setAttribute('aria-pressed',speaking?'true':'false');b.textContent=speaking?'■ Detener narración':'▶ Escuchar narración'}
+  function setAuto(){var b=document.getElementById('auto');b.setAttribute('aria-pressed',autoMode?'true':'false');b.textContent=autoMode?'■ Detener presentación automática':'Modo presentación automática'}
+
+  document.getElementById('prev').addEventListener('click',function(){show(cur-1)});
+  document.getElementById('next').addEventListener('click',function(){show(cur+1)});
+  document.getElementById('listen').addEventListener('click',function(){ if(speaking){autoMode=false;setAuto();stopSpeech()} else speak(); });
+  document.getElementById('auto').addEventListener('click',function(){ autoMode=!autoMode; setAuto(); if(autoMode) speak(); else stopSpeech(); });
+  function toggle(btn,el){var b=document.getElementById(btn),e=document.getElementById(el);b.addEventListener('click',function(){e.hidden=!e.hidden;b.setAttribute('aria-pressed',e.hidden?'false':'true')})}
+  toggle('showT','transcript'); toggle('showI','index');
+  document.addEventListener('keydown',function(e){
+    if(/INPUT|TEXTAREA|SELECT|VIDEO/.test((e.target||{}).tagName||''))return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();show(cur-1)}
+    else if(e.key==='Home'){show(0)} else if(e.key==='End'){show(N-1)}
+  });
+  var tx=null; document.getElementById('stage').addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
+  document.getElementById('stage').addEventListener('touchend',function(e){if(tx===null)return;var d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60)show(cur+(d<0?1:-1));tx=null});
+
+  // ---- Video pitch (se muestra si el archivo está publicado junto a la página)
+  (function(){
+    var src='video-pitch.mp4';
+    fetch(src,{method:'HEAD'}).then(function(r){ if(!r.ok)return; var v=document.getElementById('pitch'); v.src=src; document.getElementById('videoBox').hidden=false; document.getElementById('videoFallback').hidden=true; }).catch(function(){});
+  })();
+
+  // ---- Prácticas
+  var P={
+    gen:["Gestión de la arquitectura","Mejora continua","Gestión de la seguridad de la información","Gestión del conocimiento","Medición y reporte","Gestión del cambio organizacional","Gestión del portafolio","Gestión de proyectos","Gestión de relaciones","Gestión de riesgos","Gestión financiera del servicio","Gestión de la estrategia","Gestión de proveedores","Gestión del talento y la fuerza laboral"],
+    ser:["Gestión de la disponibilidad","Análisis del negocio","Gestión de la capacidad y el desempeño","Habilitación del cambio","Gestión de incidentes","Gestión de activos de TI","Monitoreo y gestión de eventos","Gestión de problemas","Gestión de liberaciones","Gestión del catálogo de servicios","Gestión de la configuración del servicio","Gestión de la continuidad del servicio","Diseño del servicio","Mesa de servicio","Gestión de niveles de servicio","Gestión de solicitudes de servicio","Validación y pruebas del servicio"],
+    tec:["Gestión de despliegues","Gestión de infraestructura y plataforma","Desarrollo y gestión de software"]
+  };
+  var PRIO=["Mejora continua","Gestión de la seguridad de la información","Gestión del conocimiento","Medición y reporte","Habilitación del cambio","Gestión de incidentes","Monitoreo y gestión de eventos","Gestión de problemas","Mesa de servicio","Gestión de niveles de servicio","Gestión de despliegues","Gestión de infraestructura y plataforma"];
+  var GD={gen:"Vienen de la gestión empresarial general y se adaptan al contexto de los servicios.",ser:"Nacen en la gestión de servicios de TI y son el núcleo de la operación.",tec:"Vienen de la gestión de tecnología y extienden su foco a los servicios."};
+  var gbtns=[].slice.call(document.querySelectorAll('.gbtn'));
+  function showG(g){gbtns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.g===g?'true':'false')});document.getElementById('gdesc').textContent=GD[g];document.getElementById('plist').innerHTML=P[g].map(function(p){return '<span'+(PRIO.indexOf(p)>-1?' class="hl"':'')+'>'+p+'</span>'}).join('')}
+  gbtns.forEach(function(b){b.addEventListener('click',function(){showG(b.dataset.g)})}); showG('gen');
+
+  // ---- Matriz herramienta → prácticas
+  var MG=["Mejora continua","Gestión del conocimiento","Medición y reporte","Gestión de la seguridad de la información","Gestión de proveedores"];
+  var MS=["Mesa de servicio","Gestión de incidentes","Gestión de problemas","Habilitación del cambio","Gestión de solicitudes de servicio","Gestión de activos de TI","Gestión de niveles de servicio","Monitoreo y gestión de eventos","Gestión de la disponibilidad","Gestión de la capacidad y el desempeño"];
+  var MT=["Gestión de despliegues","Gestión de infraestructura y plataforma","Desarrollo y gestión de software"];
+  var T=[
+    {n:"ServiceNow · Jira SM · GLPI",k:"Plataforma ITSM",p:["Mesa de servicio","Gestión de incidentes","Gestión de problemas","Habilitación del cambio","Gestión de solicitudes de servicio","Gestión de activos de TI","Gestión de niveles de servicio","Gestión del conocimiento"],w:"Registra cada ticket con prioridad, responsable y tiempos; los flujos de aprobación implementan la habilitación del cambio."},
+    {n:"Zabbix · Datadog",k:"Monitoreo",p:["Monitoreo y gestión de eventos","Gestión de la disponibilidad","Gestión de la capacidad y el desempeño","Gestión de infraestructura y plataforma","Gestión de incidentes"],w:"Detecta la falla antes que el usuario y puede abrir el incidente de forma automática."},
+    {n:"Confluence · base de conocimiento",k:"Conocimiento",p:["Gestión del conocimiento","Mesa de servicio","Gestión de problemas"],w:"Los errores conocidos y sus soluciones quedan disponibles para el primer nivel de soporte."},
+    {n:"Power BI",k:"Analítica",p:["Medición y reporte","Mejora continua","Gestión de niveles de servicio"],w:"Convierte los datos de los tickets en tableros para la gerencia y en metas de mejora."},
+    {n:"GitLab CI/CD · Terraform",k:"Automatización",p:["Gestión de despliegues","Desarrollo y gestión de software","Gestión de infraestructura y plataforma","Habilitación del cambio"],w:"Despliegues y configuraciones repetibles, probados y reversibles."},
+    {n:"DevOps",k:"Método",p:["Habilitación del cambio","Gestión de despliegues","Desarrollo y gestión de software","Mejora continua","Gestión de incidentes"],w:"Une desarrollo y operación: cambios pequeños, frecuentes y con retroalimentación rápida."},
+    {n:"Lean · Agile",k:"Método",p:["Mejora continua","Gestión de solicitudes de servicio","Mesa de servicio","Gestión de proveedores"],w:"Elimina pasos sin valor en los flujos de atención y organiza la mejora en ciclos cortos."},
+    {n:"ISO/IEC 27001 · SGSI",k:"Método",p:["Gestión de la seguridad de la información","Gestión de proveedores","Gestión de activos de TI"],w:"Un sistema de gestión de seguridad aporta los controles que la práctica de ITIL exige."}
+  ];
+  var tlist=document.getElementById('tlist');
+  T.forEach(function(t,i){var b=document.createElement('button');b.className='tbtn';b.innerHTML=t.n+'<small>'+t.k+'</small>';b.addEventListener('click',function(){selT(i)});tlist.appendChild(b)});
+  function selT(i){var t=T[i];[].forEach.call(tlist.children,function(b,j){b.setAttribute('aria-pressed',j===i?'true':'false')});
+    function fill(id,arr){document.getElementById(id).innerHTML=arr.map(function(p){return '<span'+(t.p.indexOf(p)>-1?' class="hl"':'')+'>'+p+'</span>'}).join('')}
+    fill('mg',MG);fill('ms',MS);fill('mt',MT);document.getElementById('mwhy').innerHTML='<b>'+t.k+':</b> '+t.w;}
+  selT(0);
+
+  // ---- Ideas
+  [].forEach.call(document.querySelectorAll('.ibtn'),function(b){b.addEventListener('click',function(){var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',o?'false':'true');b.querySelector('i').textContent=o?'+':'−'})});
+
+  // ---- Escenarios de herramientas
+  var S={
+    low:{c:[["Mesa de servicio","GLPI","Incidentes, solicitudes, cambios, activos y base de conocimiento."],["Monitoreo","Zabbix","Disponibilidad de la historia clínica y alertas."],["Despliegues","GitLab CE","Versiones controladas y reversibles."],["Tableros","Power BI Desktop","Indicadores para la gerencia."],["Seguridad","Políticas y controles de acceso","Basados en ISO/IEC 27001 y la Ley 1581 de 2012."]],w:"<b>Por qué:</b> software libre o sin costo de licencia; el esfuerzo está en la configuración y la capacitación del equipo."},
+    mid:{c:[["Mesa de servicio","Jira Service Management","Flujos ITIL listos, automatización y portal de autoservicio."],["Conocimiento","Confluence","Base de conocimiento integrada con los tickets."],["Monitoreo","Zabbix o Datadog","Alertas que crean incidentes de forma automática."],["Despliegues","GitLab CI/CD","Integrado con el registro de cambios."],["Tableros","Power BI","Indicadores en línea para la gerencia."]],w:"<b>Por qué:</b> menor tiempo de puesta en marcha y automatización incluida, a cambio de un costo de licencia por agente."}
+  };
+  var segs=[].slice.call(document.querySelectorAll('.seg button'));
+  function showS(k){segs.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.s===k?'true':'false')});document.getElementById('stack').innerHTML=S[k].c.map(function(c){return '<div class="card"><span class="tag">'+c[0]+'</span><h3>'+c[1]+'</h3><p class="muted">'+c[2]+'</p></div>'}).join('');document.getElementById('stackWhy').innerHTML=S[k].w}
+  segs.forEach(function(b){b.addEventListener('click',function(){showS(b.dataset.s)})}); showS('low');
+
+  // ---- Fases
+  var F=[
+    {m:"Meses 1–2",t:"Diagnóstico y línea base",ci:"¿Cuál es la visión? · ¿Dónde estamos ahora?",d:["Patrocinio de la gerencia y equipo de implementación","Inventario de servicios y primer catálogo","Medición de la línea base de los seis indicadores","Formación ITIL 4 Foundation para el equipo de TI"],p:"Mejora continua · Medición y reporte"},
+    {m:"Meses 3–5",t:"Mesa de servicio única",ci:"¿Dónde queremos estar? · ¿Cómo llegamos?",d:["Puesta en marcha de GLPI o Jira Service Management","Matriz de prioridades P1–P4 con las áreas clínicas","Portal de autoservicio y fin del soporte por WhatsApp","Primeros 30 artículos de la base de conocimiento"],p:"Mesa de servicio · Incidentes · Solicitudes · Conocimiento"},
+    {m:"Meses 6–9",t:"Estabilizar la operación",ci:"Actuar",d:["Comité de cambios y flujo de aprobación","Monitoreo de la historia clínica con Zabbix","Análisis de causa raíz de las caídas recurrentes","Acuerdos de nivel de servicio y controles de acceso"],p:"Habilitación del cambio · Problemas · Monitoreo · Niveles de servicio · Seguridad"},
+    {m:"Meses 10–12",t:"Medir, automatizar e innovar",ci:"¿Llegamos? · ¿Cómo mantenemos el impulso?",d:["Tablero de indicadores para la gerencia","Automatización de solicitudes frecuentes","Despliegues controlados con GitLab","Piloto de seguimiento remoto de pacientes"],p:"Medición y reporte · Despliegues · Infraestructura · Mejora continua"}
+  ];
+  var ph=document.getElementById('phases');
+  F.forEach(function(f,i){var b=document.createElement('button');b.className='phase';b.innerHTML='<span class="m">FASE '+(i+1)+' · '+f.m+'</span><strong>'+f.t+'</strong>';b.addEventListener('click',function(){selF(i)});ph.appendChild(b)});
+  function selF(i){var f=F[i];[].forEach.call(ph.children,function(b,j){b.setAttribute('aria-pressed',j===i?'true':'false')});document.getElementById('pdetail').innerHTML='<div style="display:flex;flex-direction:column;gap:.5em"><span class="eyebrow">Entregables</span><ul class="clean">'+f.d.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul></div><div style="display:flex;flex-direction:column;gap:.8em"><div><span class="eyebrow">Modelo de mejora continua</span><p style="font-weight:600;margin-top:.2em">'+f.ci+'</p></div><div><span class="eyebrow">Prácticas de ITIL</span><p style="margin-top:.2em">'+f.p+'</p></div></div>'}
+  selF(0);
+
+  var h=(location.hash||'').match(/^#s(\d+)$/); show(h?parseInt(h[1],10)-1:0);
+})();
+</script>
+
+</body>
+</html>

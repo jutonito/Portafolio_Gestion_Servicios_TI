@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portafolio Gestión de Servicios TI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: portada del portafolio; tres tarjetas grandes en secuencia (01→02→03) unidas por una línea de recorrido */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --sunk:#E6EBEF; --fg:#13212C; --muted:#56656F; --line:#D2DBE1;
+  --accent:#0A6A93; --accent-soft:#D8EBF3; --signal:#C9611A; --ink:#13212C; --ink-fg:#EEF3F6;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif; --body:"Source Sans 3","Segoe UI",Helvetica,Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F171D; --surface:#17222A; --sunk:#1E2B34; --fg:#E4ECF1; --muted:#9AAAB5; --line:#2B3A45; --accent:#4FB3DD; --accent-soft:#163746; --signal:#F0954F; --ink:#0A2533; --ink-fg:#EEF3F6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F171D; --surface:#17222A; --sunk:#1E2B34; --fg:#E4ECF1; --muted:#9AAAB5; --line:#2B3A45; --accent:#4FB3DD; --accent-soft:#163746; --signal:#F0954F; --ink:#0A2533; --ink-fg:#EEF3F6; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:36px 64px;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.05;text-wrap:balance}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--signal);outline-offset:3px;border-radius:6px}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+
+.hero{display:grid;gap:14px}
+.hero h1{font-size:clamp(2.2rem,6vw,4.2rem);font-weight:800;font-stretch:78%;letter-spacing:-.01em;max-width:18em}
+.hero .lede{font-size:1.15rem;color:var(--muted);max-width:60ch}
+.who{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.who b{color:var(--fg)}
+
+.how{display:flex;flex-wrap:wrap;gap:8px 24px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:.95rem}
+.how span{display:flex;gap:8px;align-items:baseline}
+.how i{font-style:normal;font-family:var(--mono);font-weight:700;color:var(--signal)}
+
+.acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;position:relative}
+@media (max-width:900px){.acts{grid-template-columns:minmax(0,1fr)}}
+.act{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:transform .18s,border-color .18s,box-shadow .18s;min-width:0}
+.act:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 12px 30px rgba(10,40,60,.12)}
+.act .top{background:var(--ink);color:var(--ink-fg);padding:20px 22px 18px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;min-height:150px}
+.act .num{font-family:var(--display);font-weight:800;font-stretch:75%;font-size:5.4rem;line-height:.8;color:var(--signal)}
+.act .fmt{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;text-align:right;color:#A9C0CD;display:grid;gap:4px}
+.act .fmt b{font-family:var(--body);font-size:1.05rem;letter-spacing:0;text-transform:none;color:var(--ink-fg)}
+.act .bd{padding:18px 22px 22px;display:flex;flex-direction:column;gap:12px;flex:1}
+.act h2{font-size:1.5rem;font-weight:750;font-stretch:86%}
+.act .q{font-size:.95rem;color:var(--muted)}
+.act ul{margin:0;padding-left:1.1em;font-size:.95rem;display:grid;gap:3px}
+.act .go{margin-top:auto;display:inline-flex;align-self:flex-start;gap:8px;align-items:center;background:var(--accent);color:#fff;font-weight:700;padding:10px 18px;border-radius:999px;font-size:1rem}
+.act:hover .go{background:var(--signal)}
+.stage{font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+
+.thread{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.thread div{padding:14px 16px;border-left:1px solid var(--line);display:grid;gap:2px;min-width:0}
+.thread div:first-child{border-left:none}
+.thread b{font-family:var(--display);font-size:1.1rem}
+.thread span{color:var(--muted);font-size:.92rem}
+@media (max-width:680px){.thread{grid-template-columns:minmax(0,1fr)}.thread div{border-left:none;border-top:1px solid var(--line)}.thread div:first-child{border-top:none}}
+footer{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.act{transition:none}.act:hover{transform:none}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Portafolio de actividades evaluativas</span>
+    <h1>Gestión de servicios de TI: de la estrategia a la implementación</h1>
+    <p class="lede">Las tres actividades del curso en un solo lugar. Elija una tarjeta para abrirla; desde cualquier actividad puede volver aquí con el menú superior.</p>
+    <div class="who"><span>Autor: <b>Juan David Arias Arenas</b></span><span>Curso: <b>Gestión de Servicios de TI</b></span><span>Marco de referencia: <b>ITIL 4</b></span></div>
+  </header>
+
+  <div class="how" aria-label="Cómo usar el portafolio">
+    <span><i>1</i> Elija una actividad</span>
+    <span><i>2</i> Interactúe: haga clic en botones, fichas y diagramas</span>
+    <span><i>3</i> Use “← Inicio del portafolio” para volver</span>
+  </div>
+
+  <div class="acts">
+    <a class="act" href="actividad1.html">
+      <div class="top"><span class="num">01</span><span class="fmt">Formato<b>Video pitch</b>4 min 48 s</span></div>
+      <div class="bd">
+        <span class="stage">El porqué</span>
+        <h2>La estrategia detrás de la ventaja competitiva</h2>
+        <p class="q">¿Cómo la gestión de servicios TI puede implementarse como estrategia organizacional para mejorar la ventaja competitiva?</p>
+        <ul><li>Video con capítulos navegables</li><li>Guion de cada sección</li><li>Casos: Disney, P&amp;G y Caterpillar</li></ul>
+        <span class="go">Ver el video →</span>
+      </div>
+    </a>
+    <a class="act" href="actividad2.html">
+      <div class="top"><span class="num">02</span><span class="fmt">Formato<b>Infografía interactiva</b>2 preguntas</span></div>
+      <div class="bd">
+        <span class="stage">El cómo se organiza</span>
+        <h2>Innovar y mejorar: TI como aliada de la gerencia</h2>
+        <p class="q">¿Las herramientas de innovación y mejora apoyan la gerencia? ¿Un enfoque holístico respalda la eficiencia del sistema de valor del servicio?</p>
+        <ul><li>Filtro herramientas ↔ funciones de la gerencia</li><li>Diagrama SVS clicable</li><li>Casos: Capital One, Nationwide, Pershing, Shell, Fujitsu</li></ul>
+        <span class="go">Abrir la infografía →</span>
+      </div>
+    </a>
+    <a class="act" href="actividad3.html">
+      <div class="top"><span class="num">03</span><span class="fmt">Formato<b>Presentación interactiva</b>18 diapositivas · audio</span></div>
+      <div class="bd">
+        <span class="stage">El con qué se implementa</span>
+        <h2>Propuesta de implementación con ITIL 4</h2>
+        <p class="q">¿Las herramientas y métodos de gestión de servicios de TI apoyan las prácticas generales, de servicio y técnicas de ITIL?</p>
+        <ul><li>Narración en audio y transcripción</li><li>Matriz herramienta ↔ práctica</li><li>Caso de estudio: IPS Horizonte Salud</li></ul>
+        <span class="go">Abrir la presentación →</span>
+      </div>
+    </a>
+  </div>
+
+  <section style="display:grid;gap:10px">
+    <span class="eyebrow">El hilo que une las tres actividades</span>
+    <div class="thread">
+      <div><b>01 · Estrategia</b><span>Gestionar TI como servicio crea ventaja competitiva.</span></div>
+      <div><b>02 · Organización</b><span>El sistema de valor del servicio y la mejora continua dan estructura.</span></div>
+      <div><b>03 · Implementación</b><span>Prácticas de ITIL, herramientas concretas y un plan medible.</span></div>
+    </div>
+  </section>
+
+  <footer>Juan David Arias Arenas · Gestión de Servicios de TI · Actividades de evaluación 1, 2 y 3</footer>
+</div>
+
+</body>
+</html>
